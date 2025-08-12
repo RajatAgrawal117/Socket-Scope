@@ -1,4 +1,4 @@
-import { useToast } from "./use-toast";
+import { useToast } from "./use-toast.js";
 import {
   Toast,
   ToastClose,
