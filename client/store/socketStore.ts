@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 export interface ConnectionNode {
   id: string;
@@ -6,7 +6,7 @@ export interface ConnectionNode {
   ip: string;
   connectedAt: number;
   lastActivity: number;
-  status: 'connected' | 'disconnected' | 'error';
+  status: "connected" | "disconnected" | "error";
   messageCount: number;
   bytesTransferred: number;
   latency: number;
@@ -23,7 +23,7 @@ export interface MessageFlow {
   timestamp: number;
   size: number;
   type: string;
-  status: 'success' | 'error' | 'pending';
+  status: "success" | "error" | "pending";
 }
 
 export interface MetricsData {
@@ -46,12 +46,15 @@ interface SocketStore {
   metrics: MetricsData;
   isConnected: boolean;
   selectedConnection: string | null;
-  
+
   // Actions
   setConnections: (connections: ConnectionNode[]) => void;
   addConnection: (connection: ConnectionNode) => void;
   removeConnection: (clientId: string) => void;
-  updateConnection: (clientId: string, updates: Partial<ConnectionNode>) => void;
+  updateConnection: (
+    clientId: string,
+    updates: Partial<ConnectionNode>,
+  ) => void;
   addMessage: (message: MessageFlow) => void;
   updateMetrics: (metrics: Partial<MetricsData>) => void;
   setSelectedConnection: (clientId: string | null) => void;
@@ -76,35 +79,37 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
   selectedConnection: null,
 
   setConnections: (connections) => set({ connections }),
-  
-  addConnection: (connection) => 
+
+  addConnection: (connection) =>
     set((state) => ({
       connections: [...state.connections, connection],
     })),
-  
+
   removeConnection: (clientId) =>
     set((state) => ({
-      connections: state.connections.filter((conn) => conn.clientId !== clientId),
+      connections: state.connections.filter(
+        (conn) => conn.clientId !== clientId,
+      ),
     })),
-  
+
   updateConnection: (clientId, updates) =>
     set((state) => ({
       connections: state.connections.map((conn) =>
-        conn.clientId === clientId ? { ...conn, ...updates } : conn
+        conn.clientId === clientId ? { ...conn, ...updates } : conn,
       ),
     })),
-  
+
   addMessage: (message) =>
     set((state) => ({
       messages: [message, ...state.messages.slice(0, 99)], // Keep last 100 messages
     })),
-  
+
   updateMetrics: (metrics) =>
     set((state) => ({
       metrics: { ...state.metrics, ...metrics },
     })),
-  
+
   setSelectedConnection: (clientId) => set({ selectedConnection: clientId }),
-  
+
   setConnectedStatus: (connected) => set({ isConnected: connected }),
 }));

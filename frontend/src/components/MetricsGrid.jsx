@@ -1,23 +1,23 @@
 import { useSocketStore } from "../features/socketStore.js";
 import { MetricsCard } from "./MetricsCard.jsx";
-import { 
-  Users, 
-  MessageSquare, 
-  Clock, 
+import {
+  Users,
+  MessageSquare,
+  Clock,
   AlertTriangle,
   Database,
-  TrendingUp 
+  TrendingUp,
 } from "lucide-react";
 
 export function MetricsGrid() {
   const { metrics } = useSocketStore();
 
   const formatBytes = (bytes) => {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
   };
 
   return (
@@ -29,7 +29,7 @@ export function MetricsGrid() {
         description="Currently connected clients"
         valueColor="info"
       />
-      
+
       <MetricsCard
         title="Total Connections"
         value={metrics.totalConnections}
@@ -37,7 +37,7 @@ export function MetricsGrid() {
         description="All-time connections"
         valueColor="default"
       />
-      
+
       <MetricsCard
         title="Messages/sec"
         value={metrics.messagesPerSecond.toFixed(1)}
@@ -45,7 +45,7 @@ export function MetricsGrid() {
         description="Real-time message throughput"
         valueColor="success"
       />
-      
+
       <MetricsCard
         title="Avg Latency"
         value={`${metrics.avgLatency.toFixed(0)}ms`}
@@ -53,7 +53,7 @@ export function MetricsGrid() {
         description="Average response time"
         valueColor={metrics.avgLatency > 100 ? "warning" : "success"}
       />
-      
+
       <MetricsCard
         title="Error Rate"
         value={`${(metrics.errorRate * 100).toFixed(1)}%`}
@@ -61,7 +61,7 @@ export function MetricsGrid() {
         description="Failed message percentage"
         valueColor={metrics.errorRate > 0.05 ? "error" : "success"}
       />
-      
+
       <MetricsCard
         title="Throughput"
         value={formatBytes(metrics.bytesPerSecond) + "/s"}

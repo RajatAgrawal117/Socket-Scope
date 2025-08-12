@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const initialMetrics = {
   totalConnections: 0,
@@ -18,35 +18,37 @@ export const useSocketStore = create((set, get) => ({
   selectedConnection: null,
 
   setConnections: (connections) => set({ connections }),
-  
-  addConnection: (connection) => 
+
+  addConnection: (connection) =>
     set((state) => ({
       connections: [...state.connections, connection],
     })),
-  
+
   removeConnection: (clientId) =>
     set((state) => ({
-      connections: state.connections.filter((conn) => conn.clientId !== clientId),
+      connections: state.connections.filter(
+        (conn) => conn.clientId !== clientId,
+      ),
     })),
-  
+
   updateConnection: (clientId, updates) =>
     set((state) => ({
       connections: state.connections.map((conn) =>
-        conn.clientId === clientId ? { ...conn, ...updates } : conn
+        conn.clientId === clientId ? { ...conn, ...updates } : conn,
       ),
     })),
-  
+
   addMessage: (message) =>
     set((state) => ({
       messages: [message, ...state.messages.slice(0, 99)], // Keep last 100 messages
     })),
-  
+
   updateMetrics: (metrics) =>
     set((state) => ({
       metrics: { ...state.metrics, ...metrics },
     })),
-  
+
   setSelectedConnection: (clientId) => set({ selectedConnection: clientId }),
-  
+
   setConnectedStatus: (connected) => set({ isConnected: connected }),
 }));

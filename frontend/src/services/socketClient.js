@@ -1,6 +1,6 @@
 // SocketClient for demo purposes - disabled auto-connect
 // import io from 'socket.io-client';
-import { useSocketStore } from '../features/socketStore.js';
+import { useSocketStore } from "../features/socketStore.js";
 
 class SocketClient {
   constructor() {
@@ -12,7 +12,7 @@ class SocketClient {
   }
 
   connect() {
-    console.log('Socket client connect method called - demo mode');
+    console.log("Socket client connect method called - demo mode");
     // For demo purposes, simulate connection
     this.isConnected = true;
     const store = useSocketStore.getState();
@@ -20,12 +20,12 @@ class SocketClient {
   }
 
   disconnect() {
-    console.log('Socket client disconnect method called');
+    console.log("Socket client disconnect method called");
     this.isConnected = false;
   }
 
   sendMessage(type, data) {
-    console.log('Socket client sendMessage called:', { type, data });
+    console.log("Socket client sendMessage called:", { type, data });
   }
 }
 

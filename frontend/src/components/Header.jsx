@@ -17,14 +17,19 @@ export function Header() {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                   SocketScope
                 </h1>
-                <p className="text-sm text-muted-foreground">Real-Time Connection Visualizer</p>
+                <p className="text-sm text-muted-foreground">
+                  Real-Time Connection Visualizer
+                </p>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Badge variant={isConnected ? "default" : "destructive"} className="gap-1">
+              <Badge
+                variant={isConnected ? "default" : "destructive"}
+                className="gap-1"
+              >
                 {isConnected ? (
                   <Wifi className="h-3 w-3" />
                 ) : (
@@ -36,15 +41,21 @@ export function Header() {
 
             <div className="flex items-center gap-4 text-sm">
               <div className="text-center">
-                <div className="font-medium text-foreground">{metrics.activeConnections}</div>
+                <div className="font-medium text-foreground">
+                  {metrics.activeConnections}
+                </div>
                 <div className="text-muted-foreground">Active</div>
               </div>
               <div className="text-center">
-                <div className="font-medium text-foreground">{metrics.messagesPerSecond.toFixed(1)}</div>
+                <div className="font-medium text-foreground">
+                  {metrics.messagesPerSecond.toFixed(1)}
+                </div>
                 <div className="text-muted-foreground">Msg/s</div>
               </div>
               <div className="text-center">
-                <div className="font-medium text-foreground">{metrics.avgLatency.toFixed(0)}ms</div>
+                <div className="font-medium text-foreground">
+                  {metrics.avgLatency.toFixed(0)}ms
+                </div>
                 <div className="text-muted-foreground">Latency</div>
               </div>
             </div>

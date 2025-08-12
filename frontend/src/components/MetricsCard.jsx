@@ -32,7 +32,9 @@ export function MetricsCard({
   };
 
   return (
-    <Card className={cn("transition-all duration-200 hover:shadow-lg", className)}>
+    <Card
+      className={cn("transition-all duration-200 hover:shadow-lg", className)}
+    >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
@@ -41,19 +43,20 @@ export function MetricsCard({
       </CardHeader>
       <CardContent>
         <div className="flex items-baseline gap-2">
-          <div className={cn("text-2xl font-bold", getValueColorClass(valueColor))}>
+          <div
+            className={cn("text-2xl font-bold", getValueColorClass(valueColor))}
+          >
             {value}
           </div>
           {change !== undefined && (
             <div className={cn("text-xs", getChangeColorClass(change))}>
-              {change > 0 ? "+" : ""}{change.toFixed(1)}%
+              {change > 0 ? "+" : ""}
+              {change.toFixed(1)}%
             </div>
           )}
         </div>
         {description && (
-          <p className="text-xs text-muted-foreground mt-1">
-            {description}
-          </p>
+          <p className="text-xs text-muted-foreground mt-1">{description}</p>
         )}
       </CardContent>
     </Card>

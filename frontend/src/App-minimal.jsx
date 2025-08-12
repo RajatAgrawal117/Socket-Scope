@@ -1,4 +1,4 @@
-import './global.css';
+import "./global.css";
 import { createRoot } from "react-dom/client";
 
 const App = () => (

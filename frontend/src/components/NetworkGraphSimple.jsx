@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card.jsx';
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card.jsx";
 
 export function NetworkGraphSimple() {
   return (
@@ -15,7 +15,9 @@ export function NetworkGraphSimple() {
         <div className="relative h-[600px] bg-card border-border border rounded-lg flex items-center justify-center">
           <div className="text-center">
             <div className="text-6xl mb-4">🌐</div>
-            <div className="text-xl font-semibold mb-2">Network Visualization</div>
+            <div className="text-xl font-semibold mb-2">
+              Network Visualization
+            </div>
             <div className="text-muted-foreground">
               Interactive D3.js force-directed graph will be rendered here
             </div>

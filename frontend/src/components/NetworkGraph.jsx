@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import * as d3 from 'd3';
-import { useSocketStore } from '../features/socketStore.js';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card.jsx';
+import { useEffect, useRef, useState } from "react";
+import * as d3 from "d3";
+import { useSocketStore } from "../features/socketStore.js";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card.jsx";
 
 export function NetworkGraph() {
   const svgRef = useRef(null);
-  const { connections, messages, selectedConnection, setSelectedConnection } = useSocketStore();
+  const { connections, messages, selectedConnection, setSelectedConnection } =
+    useSocketStore();
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
   useEffect(() => {
@@ -14,14 +15,14 @@ export function NetworkGraph() {
       if (container) {
         setDimensions({
           width: container.clientWidth,
-          height: Math.max(400, container.clientHeight)
+          height: Math.max(400, container.clientHeight),
         });
       }
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -36,7 +37,8 @@ export function NetworkGraph() {
     const g = svg.append("g");
 
     // Set up zoom behavior
-    const zoom = d3.zoom()
+    const zoom = d3
+      .zoom()
       .scaleExtent([0.1, 4])
       .on("zoom", (event) => {
         g.attr("transform", event.transform);
@@ -45,70 +47,90 @@ export function NetworkGraph() {
     svg.call(zoom);
 
     // Prepare data
-    const nodes = connections.map(conn => ({
+    const nodes = connections.map((conn) => ({
       id: conn.clientId,
       ...conn,
       x: conn.x || Math.random() * width,
-      y: conn.y || Math.random() * height
+      y: conn.y || Math.random() * height,
     }));
 
     // Create links from recent messages
-    const recentMessages = messages.filter(msg => 
-      Date.now() - msg.timestamp < 30000 // Last 30 seconds
+    const recentMessages = messages.filter(
+      (msg) => Date.now() - msg.timestamp < 30000, // Last 30 seconds
     );
 
-    const links = recentMessages.map(msg => ({
+    const links = recentMessages.map((msg) => ({
       source: msg.from,
       target: msg.to,
-      message: msg
+      message: msg,
     }));
 
     // Set up force simulation
-    const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+    const simulation = d3
+      .forceSimulation(nodes)
+      .force(
+        "link",
+        d3
+          .forceLink(links)
+          .id((d) => d.id)
+          .distance(100),
+      )
       .force("charge", d3.forceManyBody().strength(-300))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .force("collision", d3.forceCollide().radius(25));
 
     // Create links
-    const link = g.append("g")
+    const link = g
+      .append("g")
       .selectAll("line")
       .data(links)
-      .enter().append("line")
-      .attr("stroke", d => {
+      .enter()
+      .append("line")
+      .attr("stroke", (d) => {
         const latency = d.message.latency || 0;
         if (latency > 200) return "#ef4444"; // red for high latency
         if (latency > 100) return "#f59e0b"; // yellow for medium latency
         return "#10b981"; // green for low latency
       })
-      .attr("stroke-width", d => Math.max(1, Math.min(5, d.message.size / 1000)))
+      .attr("stroke-width", (d) =>
+        Math.max(1, Math.min(5, d.message.size / 1000)),
+      )
       .attr("stroke-opacity", 0.7);
 
     // Create nodes
-    const node = g.append("g")
+    const node = g
+      .append("g")
       .selectAll("g")
       .data(nodes)
-      .enter().append("g")
-      .call(d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended));
+      .enter()
+      .append("g")
+      .call(
+        d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended),
+      );
 
     // Add circles for nodes
-    node.append("circle")
-      .attr("r", d => Math.max(8, Math.min(20, Math.sqrt(d.messageCount))))
-      .attr("fill", d => {
-        if (d.status === 'error') return "#ef4444";
-        if (d.status === 'disconnected') return "#6b7280";
+    node
+      .append("circle")
+      .attr("r", (d) => Math.max(8, Math.min(20, Math.sqrt(d.messageCount))))
+      .attr("fill", (d) => {
+        if (d.status === "error") return "#ef4444";
+        if (d.status === "disconnected") return "#6b7280";
         return "#3b82f6";
       })
-      .attr("stroke", d => selectedConnection === d.id ? "#f59e0b" : "#1f2937")
-      .attr("stroke-width", d => selectedConnection === d.id ? 3 : 1)
+      .attr("stroke", (d) =>
+        selectedConnection === d.id ? "#f59e0b" : "#1f2937",
+      )
+      .attr("stroke-width", (d) => (selectedConnection === d.id ? 3 : 1))
       .style("cursor", "pointer");
 
     // Add labels
-    node.append("text")
-      .text(d => d.clientId.slice(0, 8))
+    node
+      .append("text")
+      .text((d) => d.clientId.slice(0, 8))
       .attr("font-size", "10px")
       .attr("fill", "#e5e7eb")
       .attr("text-anchor", "middle")
@@ -122,12 +144,12 @@ export function NetworkGraph() {
     // Update positions on tick
     simulation.on("tick", () => {
       link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+        .attr("x1", (d) => d.source.x)
+        .attr("y1", (d) => d.source.y)
+        .attr("x2", (d) => d.target.x)
+        .attr("y2", (d) => d.target.y);
 
-      node.attr("transform", d => `translate(${d.x},${d.y})`);
+      node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
 
     // Drag functions
@@ -151,7 +173,13 @@ export function NetworkGraph() {
     return () => {
       simulation.stop();
     };
-  }, [connections, messages, selectedConnection, dimensions, setSelectedConnection]);
+  }, [
+    connections,
+    messages,
+    selectedConnection,
+    dimensions,
+    setSelectedConnection,
+  ]);
 
   return (
     <Card className="flex-1">
@@ -169,9 +197,9 @@ export function NetworkGraph() {
             ref={svgRef}
             width="100%"
             height="100%"
-            style={{ background: 'var(--card)' }}
+            style={{ background: "var(--card)" }}
           />
-          
+
           {/* Legend */}
           <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm border rounded-lg p-3 text-xs">
             <div className="space-y-2">
