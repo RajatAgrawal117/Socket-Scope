@@ -1,13 +1,13 @@
 import './global.css';
-import { Toaster } from "./components/ui/toaster";
+import { Toaster } from "./components/ui/toaster.jsx";
 import { createRoot } from "react-dom/client";
-import { Toaster as Sonner } from "./components/ui/sonner";
-import { TooltipProvider } from "./components/ui/tooltip";
+import { Toaster as Sonner } from "./components/ui/sonner.jsx";
+import { TooltipProvider } from "./components/ui/tooltip.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Metrics from "./pages/Metrics";
-import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard.jsx";
+import Metrics from "./pages/Metrics.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 const queryClient = new QueryClient();
 
