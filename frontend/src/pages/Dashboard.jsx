@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from '../components/Header.jsx';
 import { MetricsGrid } from '../components/MetricsGrid.jsx';
-import { NetworkGraph } from '../components/NetworkGraph.jsx';
+import { NetworkGraphSimple } from '../components/NetworkGraphSimple.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
 import { Badge } from '../components/ui/badge.jsx';
 import { ScrollArea } from '../components/ui/scroll-area.jsx';
@@ -130,7 +130,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Network Graph - Takes up 2 columns */}
           <div className="lg:col-span-2">
-            <NetworkGraph />
+            <NetworkGraphSimple />
           </div>
           
           {/* Side Panel */}
