@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { cn } from "../utils/cn";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card.jsx";
+import { cn } from "../utils/cn.js";
 
 export function MetricsCard({
   title,

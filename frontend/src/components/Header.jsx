@@ -1,6 +1,6 @@
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { useSocketStore } from "../features/socketStore";
+import { Badge } from "./ui/badge.jsx";
+import { Button } from "./ui/button.jsx";
+import { useSocketStore } from "../features/socketStore.js";
 import { Activity, Wifi, WifiOff } from "lucide-react";
 
 export function Header() {

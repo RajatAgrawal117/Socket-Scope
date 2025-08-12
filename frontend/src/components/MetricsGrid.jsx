@@ -1,5 +1,5 @@
-import { useSocketStore } from "../features/socketStore";
-import { MetricsCard } from "./MetricsCard";
+import { useSocketStore } from "../features/socketStore.js";
+import { MetricsCard } from "./MetricsCard.jsx";
 import { 
   Users, 
   MessageSquare, 
