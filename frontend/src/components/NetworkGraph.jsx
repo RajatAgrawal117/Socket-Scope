@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { useSocketStore } from '../features/socketStore';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { useSocketStore } from '../features/socketStore.js';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card.jsx';
 
 export function NetworkGraph() {
   const svgRef = useRef(null);

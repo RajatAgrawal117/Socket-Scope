@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Header } from '../components/Header';
-import { MetricsGrid } from '../components/MetricsGrid';
-import { NetworkGraph } from '../components/NetworkGraph';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { useSocketStore } from '../features/socketStore';
+import { Header } from '../components/Header.jsx';
+import { MetricsGrid } from '../components/MetricsGrid.jsx';
+import { NetworkGraph } from '../components/NetworkGraph.jsx';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
+import { Badge } from '../components/ui/badge.jsx';
+import { ScrollArea } from '../components/ui/scroll-area.jsx';
+import { useSocketStore } from '../features/socketStore.js';
 import { Clock, MessageSquare, User } from 'lucide-react';
 
 // Mock data generator for demo purposes
