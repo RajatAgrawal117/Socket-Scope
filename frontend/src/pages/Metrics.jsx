@@ -1,7 +1,7 @@
-import { Header } from '../components/Header';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { useSocketStore } from '../features/socketStore';
+import { Header } from '../components/Header.jsx';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card.jsx';
+import { Badge } from '../components/ui/badge.jsx';
+import { useSocketStore } from '../features/socketStore.js';
 import { 
   LineChart, 
   Line, 
