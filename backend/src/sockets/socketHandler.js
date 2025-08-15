@@ -19,6 +19,18 @@ export const handleConnection = (io) => {
       metrics.activeConnections.set(activeCount);
 
       io.emit('connection_update', connectionService.getConnections());
+
+      // Publish connection event to Kafka
+      try {
+        publishMessage(config.kafka.topics.connections, {
+          clientId,
+          ipAddress,
+          timestamp: new Date(),
+          type: 'connected'
+        });
+      } catch (kafkaError) {
+        console.warn('Kafka publish for new connection failed:', kafkaError.message);
+      }
     } catch (error) {
       console.error('Error saving connection:', error);
     }

@@ -14,7 +14,12 @@ export const setSocketIO = (socketIO) => {
 };
 
 export const startConsumer = async () => {
-  await consumer.subscribe({ topics: [config.kafka.topics.messages, config.kafka.topics.metrics, config.kafka.topics.replay] });
+  await consumer.subscribe({ topics: [
+    config.kafka.topics.messages,
+    config.kafka.topics.metrics,
+    config.kafka.topics.replay,
+    config.kafka.topics.connections
+  ] });
   
   await consumer.run({
     eachMessage: async ({ topic, message }) => {
@@ -32,6 +37,9 @@ export const startConsumer = async () => {
             break;
           case config.kafka.topics.replay:
             io.emit('replay_message', data);
+            break;
+          case config.kafka.topics.connections:
+            io.emit('connection_event', data);
             break;
         }
       }
