@@ -2,6 +2,7 @@ import { Badge } from "./ui/badge.jsx";
 import { Button } from "./ui/button.jsx";
 import { useSocketStore } from "../features/socketStore.js";
 import { Activity, Wifi, WifiOff } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Header() {
   const { isConnected, metrics } = useSocketStore();
@@ -22,6 +23,24 @@ export function Header() {
                 </p>
               </div>
             </div>
+            
+            <nav className="flex items-center gap-6 ml-8">
+              <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
+                Dashboard
+              </Link>
+              <Link to="/metrics" className="text-sm font-medium hover:text-primary transition-colors">
+                Metrics
+              </Link>
+              <Link to="/test" className="text-sm font-medium hover:text-primary transition-colors">
+                Test Lab
+              </Link>
+              <Link to="/wiki" className="text-sm font-medium hover:text-primary transition-colors">
+                Socket Wiki
+              </Link>
+              <Link to="/replay" className="text-sm font-medium hover:text-primary transition-colors">
+                Replay
+              </Link>
+            </nav>
           </div>
 
           <div className="flex items-center gap-4">

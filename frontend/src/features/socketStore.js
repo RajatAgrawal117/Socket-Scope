@@ -38,6 +38,8 @@ export const useSocketStore = create((set, get) => ({
       ),
     })),
 
+  setMessages: (messages) => set({ messages }),
+
   addMessage: (message) =>
     set((state) => ({
       messages: [message, ...state.messages.slice(0, 99)], // Keep last 100 messages

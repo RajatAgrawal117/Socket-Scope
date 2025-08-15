@@ -1,0 +1,23 @@
+{
+  "name": "socketscope-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js",
+    "dev:local": "node src/index.js",
+    "start": "node src/index.js",
+    "create-admin": "node src/scripts/createAdmin.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "kafkajs": "^2.2.4",
+    "pg": "^8.16.3",
+    "prom-client": "^15.1.0",
+    "redis": "^4.6.10",
+    "socket.io": "^4.7.5"
+  }
+}

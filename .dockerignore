@@ -45,6 +45,10 @@ service
 tests
 fixtures-pages
 fixtures-apps
+client
+netlify
+shared
+public
 
 # Netlify
 .netlify

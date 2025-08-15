@@ -11,58 +11,9 @@ import {
 import { Badge } from "../components/ui/badge.jsx";
 import { ScrollArea } from "../components/ui/scroll-area.jsx";
 import { useSocketStore } from "../features/socketStore.js";
+import { apiClient } from "../config/api.js";
+import { socketClient } from "../services/socketClient.js";
 import { Clock, MessageSquare, User } from "lucide-react";
-
-// Mock data generator for demo purposes
-const generateMockData = () => {
-  const connections = [];
-  const messages = [];
-
-  // Generate random connections
-  for (let i = 0; i < 12; i++) {
-    connections.push({
-      id: `conn-${i}`,
-      clientId: `client-${Math.random().toString(36).substr(2, 8)}`,
-      ip: `192.168.1.${Math.floor(Math.random() * 255)}`,
-      connectedAt: Date.now() - Math.random() * 3600000,
-      lastActivity: Date.now() - Math.random() * 60000,
-      status:
-        Math.random() > 0.1
-          ? "connected"
-          : Math.random() > 0.5
-            ? "disconnected"
-            : "error",
-      messageCount: Math.floor(Math.random() * 1000),
-      bytesTransferred: Math.floor(Math.random() * 1000000),
-      latency: Math.random() * 300,
-    });
-  }
-
-  // Generate random messages
-  for (let i = 0; i < 50; i++) {
-    const from =
-      connections[Math.floor(Math.random() * connections.length)]?.clientId;
-    const to =
-      connections[Math.floor(Math.random() * connections.length)]?.clientId;
-
-    if (from && to && from !== to) {
-      messages.push({
-        id: `msg-${i}`,
-        from,
-        to,
-        timestamp: Date.now() - Math.random() * 300000,
-        size: Math.floor(Math.random() * 10000),
-        type: ["data", "heartbeat", "command", "response"][
-          Math.floor(Math.random() * 4)
-        ],
-        status: Math.random() > 0.05 ? "success" : "error",
-        latency: Math.random() * 300,
-      });
-    }
-  }
-
-  return { connections, messages };
-};
 
 export default function Dashboard() {
   const {
@@ -70,81 +21,131 @@ export default function Dashboard() {
     messages,
     selectedConnection,
     setConnections,
+    setMessages,
     addMessage,
     updateMetrics,
+    setConnectedStatus,
   } = useSocketStore();
+  const [loading, setLoading] = useState(true);
 
-  // Initialize with mock data for demo
+  // WebSocket connection for real-time updates
   useEffect(() => {
-    const { connections: mockConnections, messages: mockMessages } =
-      generateMockData();
-    setConnections(mockConnections);
+    socketClient.connect();
 
-    mockMessages.forEach((msg) => addMessage(msg));
-
-    // Calculate and update metrics
-    const activeConnections = mockConnections.filter(
-      (c) => c.status === "connected",
-    ).length;
-    const totalMessages = mockMessages.length;
-    const avgLatency =
-      mockMessages.reduce((sum, m) => sum + (m.latency || 0), 0) /
-      totalMessages;
-    const errorRate =
-      mockMessages.filter((m) => m.status === "error").length / totalMessages;
-    const bytesPerSecond =
-      mockConnections.reduce((sum, c) => sum + c.bytesTransferred, 0) / 60;
-
-    updateMetrics({
-      totalConnections: mockConnections.length,
-      activeConnections,
-      messagesPerSecond: totalMessages / 60,
-      avgLatency,
-      errorRate,
-      bytesPerSecond,
-      topTalkers: mockConnections
-        .sort((a, b) => b.messageCount - a.messageCount)
-        .slice(0, 5)
-        .map((c) => ({
-          clientId: c.clientId,
-          messageCount: c.messageCount,
-          bytesTransferred: c.bytesTransferred,
-        })),
+    socketClient.on('connection_status', (connected) => {
+      setConnectedStatus(connected);
     });
 
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      // Add random message
-      const activeConns = mockConnections.filter(
-        (c) => c.status === "connected",
-      );
-      if (activeConns.length >= 2) {
-        const from =
-          activeConns[Math.floor(Math.random() * activeConns.length)];
-        const to = activeConns[Math.floor(Math.random() * activeConns.length)];
+    socketClient.on('connections_updated', (updatedConnections) => {
+      setConnections(updatedConnections);
+    });
 
-        if (from.clientId !== to.clientId) {
-          addMessage({
-            id: `msg-${Date.now()}`,
-            from: from.clientId,
-            to: to.clientId,
-            timestamp: Date.now(),
-            size: Math.floor(Math.random() * 5000),
-            type: "data",
-            status: Math.random() > 0.05 ? "success" : "error",
-            latency: Math.random() * 200,
-          });
-        }
+    socketClient.on('message_received', (message) => {
+      addMessage({
+        ...message,
+        from: message.clientId,
+        to: message.data?.to || 'broadcast',
+        timestamp: new Date(message.timestamp).getTime(),
+        size: JSON.stringify(message.data).length,
+        type: message.type,
+        latency: message.data?.latency || 0
+      });
+    });
+
+    socketClient.on('kafka_message_received', (message) => {
+      addMessage({
+        id: `kafka-${Date.now()}`,
+        from: message.clientId || 'kafka',
+        to: message.data?.to || 'broadcast',
+        timestamp: new Date(message.timestamp).getTime(),
+        size: JSON.stringify(message.data).length,
+        type: 'kafka',
+        status: 'success',
+        latency: message.data?.latency || 0
+      });
+    });
+
+    socketClient.on('kafka_metrics_received', (metrics) => {
+      updateMetrics(metrics);
+    });
+
+    socketClient.on('replay_message_received', (message) => {
+      addMessage({
+        ...message,
+        id: `replay-${message.id}`,
+        type: 'replay',
+        status: 'replayed'
+      });
+    });
+
+    return () => {
+      socketClient.disconnect();
+    };
+  }, [setConnectedStatus, setConnections, addMessage]);
+
+  // Fetch real data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [connectionsData, messagesData, metricsData] = await Promise.all([
+          apiClient.get('/connections'),
+          apiClient.get('/messages?limit=50'),
+          apiClient.get('/metrics')
+        ]);
+
+        setConnections(connectionsData.map(conn => ({
+          ...conn,
+          clientId: conn.client_id,
+          connectedAt: new Date(conn.connected_at).getTime(),
+          lastActivity: new Date(conn.last_activity).getTime(),
+          messageCount: conn.message_count,
+          bytesTransferred: conn.bytes_transferred,
+          ip: conn.ip_address
+        })));
+
+        setMessages(messagesData.map(msg => ({
+          ...msg,
+          from: msg.from_client,
+          to: msg.to_client,
+          timestamp: new Date(msg.timestamp).getTime(),
+          size: msg.size_bytes,
+          type: msg.message_type,
+          latency: msg.latency_ms
+        })));
+
+        updateMetrics(metricsData);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setLoading(false);
       }
-    }, 2000);
+    };
 
+    fetchData();
+    const interval = setInterval(fetchData, 5000); // Refresh every 5 seconds
     return () => clearInterval(interval);
-  }, [setConnections, addMessage, updateMetrics]);
+  }, [setConnections, setMessages, updateMetrics]);
 
   const selectedConn = connections.find(
     (c) => c.clientId === selectedConnection,
   );
   const recentMessages = messages.slice(0, 20);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-6 py-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading dashboard data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
