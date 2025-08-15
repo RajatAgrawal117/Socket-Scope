@@ -6,6 +6,7 @@ import { TooltipProvider } from "./components/ui/tooltip.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.jsx";
+import Connect from "./pages/Connect.jsx";
 import Metrics from "./pages/Metrics.jsx";
 import SocketWiki from "./pages/SocketWiki.jsx";
 import TestLab from "./pages/TestLab.jsx";
@@ -24,6 +25,7 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Dashboard />} />
+          <Route path="/connect" element={<Connect />} />
           <Route path="/metrics" element={<Metrics />} />
           <Route path="/wiki" element={<SocketWiki />} />
           <Route path="/test" element={<TestLab />} />

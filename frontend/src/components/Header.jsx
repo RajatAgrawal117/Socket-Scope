@@ -8,37 +8,40 @@ export function Header() {
   const { isConnected, metrics } = useSocketStore();
 
   return (
-    <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-border bg-gradient-to-r from-background via-background to-background/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Activity className="h-8 w-8 text-info" />
+          <div className="flex items-center gap-8">
+            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <Activity className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                   SocketScope
                 </h1>
-                <p className="text-sm text-muted-foreground">
-                  Real-Time Connection Visualizer
+                <p className="text-xs text-muted-foreground">
+                  WebSocket Monitor
                 </p>
               </div>
-            </div>
+            </Link>
             
-            <nav className="flex items-center gap-6 ml-8">
-              <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
+            <nav className="hidden md:flex items-center gap-1">
+              <Link to="/" className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
                 Dashboard
               </Link>
-              <Link to="/metrics" className="text-sm font-medium hover:text-primary transition-colors">
-                Metrics
+              <Link to="/connect" className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                Connect
               </Link>
-              <Link to="/test" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to="/test" className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
                 Test Lab
               </Link>
-              <Link to="/wiki" className="text-sm font-medium hover:text-primary transition-colors">
-                Socket Wiki
+              <Link to="/metrics" className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                Metrics
               </Link>
-              <Link to="/replay" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to="/replay" className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
                 Replay
+              </Link>
+              <Link to="/wiki" className="px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                Wiki
               </Link>
             </nav>
           </div>
