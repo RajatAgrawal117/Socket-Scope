@@ -7,8 +7,11 @@ import { metrics } from '../metrics/prometheus.js';
 
 export const handleConnection = (io) => {
   io.on('connection', async (socket) => {
-    const clientId = socket.id;
+    const clientId = socket.handshake.query.clientId || socket.id;
+    const appName = socket.handshake.query.appName || 'Unknown';
     const ipAddress = socket.handshake.address;
+    
+    socket.clientId = clientId; // Store for easy access
     
     try {
       await dbService.saveConnection(clientId, ipAddress);
@@ -66,21 +69,27 @@ export const handleConnection = (io) => {
 
         // Route message to specific client or broadcast
         if (data.to && data.to !== 'broadcast') {
-          // Send to specific client
+          // Send to specific client by clientId
           const targetSocket = Array.from(io.sockets.sockets.values())
-            .find(s => s.id === data.to);
+            .find(s => s.clientId === data.to);
           
           if (targetSocket) {
+            console.log(`📤 P2P: ${clientId} → ${data.to}`);
             targetSocket.emit('message_received', {
               ...message,
-              from: clientId
+              from: clientId,
+              content: data.content
             });
+          } else {
+            console.log(`❌ P2P: Client ${data.to} not found`);
           }
         } else {
           // Broadcast to all clients except sender
+          console.log(`📢 Broadcast from ${clientId}`);
           socket.broadcast.emit('message_received', {
             ...message,
-            from: clientId
+            from: clientId,
+            content: data.content
           });
         }
 
